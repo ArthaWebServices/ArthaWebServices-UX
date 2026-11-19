@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,6 +17,20 @@ const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
 // Security & Parsing Middleware
 app.use(helmet());
+
+// Gzip / Deflate Response Compression Middleware
+app.use(
+  compression({
+    threshold: 1024, // Responses > 1KB are compressed
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+    level: 6, // Optimal balance of CPU throughput and compression ratio
+  })
+);
 app.use(
   cors({
     origin: [CLIENT_URL, "https://arthawebservices.dev", "http://localhost:3000"],
