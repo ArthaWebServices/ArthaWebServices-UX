@@ -22,7 +22,7 @@ app.use(helmet());
 app.use(
   compression({
     threshold: 1024, // Responses > 1KB are compressed
-    filter: (req, res) => {
+    filter: (req: express.Request, res: express.Response) => {
       if (req.headers["x-no-compression"]) {
         return false;
       }
